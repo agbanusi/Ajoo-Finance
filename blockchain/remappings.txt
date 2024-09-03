@@ -1,0 +1,7 @@
+@solmate/=lib/solmate/src/
+ds-test/=lib/ds-test/src/
+@openzeppelin/contracts/=lib/openzeppelin-contracts/contracts/
+@openzeppelin/contracts-upgradeable/=lib/openzeppelin-contracts-upgradeable/contracts/
+@coinbase/verifications/=lib/verifications/src/
+@uniswap/v3-core/=lib/v3-core/
+@uniswap/v3-periphery/=lib/v3-periphery/
