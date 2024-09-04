@@ -40,7 +40,7 @@ contract Savings is Ownable, ReentrancyGuard {
         emit AutoSaveToggled(_enabled, _defaultToken, _operator);
     }
 
-    function deposit(address _token, uint256 _amount) external onlyOwner nonReentrant {
+    function deposit(address _token, uint256 _amount) public virtual onlyOwner nonReentrant {
         require(isTokenAccepted[_token], "Token not accepted");
         require(_amount > 0, "Amount must be greater than 0");
         IERC20(_token).safeTransferFrom(msg.sender, address(this), _amount);
@@ -48,7 +48,7 @@ contract Savings is Ownable, ReentrancyGuard {
         emit Deposit(msg.sender, _token, _amount);
     }
 
-    function withdraw(address _token, uint256 _amount) external onlyOwner nonReentrant {
+    function withdraw(address _token, uint256 _amount) public virtual onlyOwner nonReentrant {
         require(isTokenAccepted[_token], "Token not accepted");
         require(_amount > 0, "Amount must be greater than 0");
         require(_amount <= tokenSavings[_token], "Insufficient balance");
