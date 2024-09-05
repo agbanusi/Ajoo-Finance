@@ -57,7 +57,7 @@ contract Savings is Ownable, ReentrancyGuard {
         emit Withdraw(msg.sender, _token, _amount);
     }
 
-    function autoSave(uint256 _amount) external onlyOperator nonReentrant {
+    function autoSave(uint256 _amount) public virtual onlyOperator nonReentrant {
         require(autoSaveEnabled, "Auto-save is not enabled");
         require(_amount > 0, "Amount must be greater than 0");
         IERC20(defaultToken).safeTransferFrom(owner(), address(this), _amount);
