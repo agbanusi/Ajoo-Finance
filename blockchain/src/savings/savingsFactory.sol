@@ -10,6 +10,14 @@ import "./savings.vault.sol";
 import "./savings.investment.sol";
 import "./savings.target.sol";
 
+
+import "./savings.challenge.sol";
+import "./savings.circle.sol";
+import "./savings.group.sol";
+import "./savings.custodial.sol";
+
+
+
 contract SavingsFactory is Ownable {
     event SavingsCreated(address indexed owner, address savingsContract, address[] acceptedTokens, string savingsType);
     
@@ -55,6 +63,50 @@ contract SavingsFactory is Ownable {
         TargetSavings newTargetSavings = new TargetSavings(msg.sender, _acceptedTokens, _targets);
         emit SavingsCreated(msg.sender, address(newTargetSavings), _acceptedTokens, "Target");
         return address(newTargetSavings);
+    }
+
+    function createChallengeSavings(address[] calldata _acceptedTokens) external returns (address) {
+        require(_acceptedTokens.length > 0 && _acceptedTokens.length <= 32, "Invalid number of tokens");
+        validateTokens(_acceptedTokens);
+
+        SavingsChallenge newChallengeSavings = new SavingsChallenge(msg.sender, _acceptedTokens);
+        emit SavingsCreated(msg.sender, address(newChallengeSavings), _acceptedTokens, "Challenge");
+        return address(newChallengeSavings);
+    }
+
+    function createCustodialSavings(address[] calldata _acceptedTokens, address _recipient, uint256 _unlockPeriod) external returns (address) {
+        require(_acceptedTokens.length > 0 && _acceptedTokens.length <= 32, "Invalid number of tokens");
+        validateTokens(_acceptedTokens);
+
+        CustodialSavings newCustodialSavings = new CustodialSavings(msg.sender, _recipient, _acceptedTokens, block.timestamp + _unlockPeriod);
+        emit SavingsCreated(msg.sender, address(newCustodialSavings), _acceptedTokens, "Custodial");
+        return address(newCustodialSavings);
+    }
+
+    function createCircleSavings(address _acceptedToken, address _recipient, uint256 _periodDuration) external returns (address) {
+        address[] memory tokens = new address[](1);
+        tokens[0] = _acceptedToken;
+
+        CircleSavings newCustodialSavings = new CircleSavings(_acceptedToken, msg.sender, owner(),_periodDuration, 250);
+        emit SavingsCreated(msg.sender, address(newCustodialSavings), tokens, "Circle");
+        return address(newCustodialSavings);
+    }
+
+    function createGroupSavings(
+        address[] calldata _acceptedTokens,
+        address[] memory _initialMembers
+    ) public returns (address) {
+        require(_acceptedTokens.length > 0 && _acceptedTokens.length <= 32, "Invalid number of tokens");
+        validateTokens(_acceptedTokens);
+
+        GroupSavings newGroupSavings = new GroupSavings(
+            msg.sender,
+            _acceptedTokens,
+            _initialMembers
+        );
+        
+        emit SavingsCreated(msg.sender, address(newGroupSavings), _acceptedTokens, "Group");
+        return address(newGroupSavings);
     }
 
     function updateAcceptableTokens(address[] calldata _acceptedTokens) external onlyOwner {

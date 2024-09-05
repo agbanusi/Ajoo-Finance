@@ -42,11 +42,11 @@ contract CircleSavings is ReentrancyGuard, Ownable {
 
     constructor(
         address _token,
-        address _ajooOps,
+        address _admin,
         address _taxCollector,
         uint256 _periodDuration,
         uint256 _protocolTaxRate
-    ) Ownable(_ajooOps) {
+    ) Ownable(_admin) {
         require(_periodDuration >= MIN_PERIOD_DURATION, "Period duration too short");
         require(_protocolTaxRate <= 1000, "Tax rate too high"); // Max 10%
         token = IERC20(_token);
@@ -57,6 +57,7 @@ contract CircleSavings is ReentrancyGuard, Ownable {
 
     function addMember(address _member) external onlyOwner {
         require(!members[_member].isActive, "Member already exists");
+        require(startTime == 0 || currentPeriod == 0, "Cannot add member during active cycle");
         memberList.push(_member);
         members[_member] = Member(true, false, 0);
         cycleLength = memberList.length;
