@@ -37,8 +37,8 @@ contract UniswapYieldStrategy is ReentrancyGuard, AccessControl {
         address _nonfungiblePositionManager,
         address _swapRouter,
         uint24 _fee,
-        address _owner,
-        address _proxy
+        address _owner
+        // address _proxy
     ) {
         usdtToken = IERC20(_usdtToken);
         wethToken = IERC20(_wethToken);
@@ -50,7 +50,7 @@ contract UniswapYieldStrategy is ReentrancyGuard, AccessControl {
         _setRoleAdmin(USER_ROLE, USER_ROLE_ADMIN);
         _grantRole(DEFAULT_ADMIN_ROLE, _owner);
         _grantRole(USER_ROLE, _owner);
-        _grantRole(USER_ROLE_ADMIN, _proxy);
+        _grantRole(USER_ROLE_ADMIN, _owner);
         _grantRole(USER_ROLE, msg.sender);
     }
 

@@ -16,3 +16,9 @@
 [submodule "blockchain/lib/solmate"]
 	path = blockchain/lib/solmate
 	url = https://github.com/transmissions11/solmate
+[submodule "blockchain/lib/solidity-examples"]
+	path = blockchain/lib/solidity-examples
+	url = https://github.com/LayerZero-Labs/solidity-examples
+[submodule "blockchain/lib/ccip"]
+	path = blockchain/lib/ccip
+	url = https://github.com/smartcontractkit/ccip

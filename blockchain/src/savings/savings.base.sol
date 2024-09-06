@@ -85,6 +85,10 @@ contract Savings is Ownable, ReentrancyGuard {
     function getAcceptedTokens() external view returns (address[] memory) {
         return acceptedTokens;
     }
+
+    function savingsCompatible() external pure returns (bool){
+        return true;
+    }
 }
 
 // no rebase

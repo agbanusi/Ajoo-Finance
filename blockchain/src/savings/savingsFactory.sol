@@ -23,9 +23,14 @@ contract SavingsFactory is Ownable {
     
     address[] public acceptableTokens;
     mapping(address => bool) public isTokenAcceptable;
+    address COORDINATOR;
+    uint64 subscriptionId;
+    bytes32 keyHash;
     
 
-    constructor() Ownable(msg.sender) {}
+    constructor( address _vrfCoordinator,
+        uint64 _subscriptionId,
+        bytes32 _keyHash) Ownable(msg.sender) {}
 
     function createBaseSavings(address[] calldata _acceptedTokens) external returns (address) {
         require(_acceptedTokens.length > 0 && _acceptedTokens.length <= 32, "Invalid number of tokens");
@@ -86,8 +91,8 @@ contract SavingsFactory is Ownable {
     function createCircleSavings(address _acceptedToken, address _recipient, uint256 _periodDuration) external returns (address) {
         address[] memory tokens = new address[](1);
         tokens[0] = _acceptedToken;
-
-        CircleSavings newCustodialSavings = new CircleSavings(_acceptedToken, msg.sender, owner(),_periodDuration, 250);
+        //default 2.5%
+        CircleSavings newCustodialSavings = new CircleSavings(_acceptedToken, msg.sender, owner(),_periodDuration, 250, COORDINATOR, subscriptionId, keyHash);
         emit SavingsCreated(msg.sender, address(newCustodialSavings), tokens, "Circle");
         return address(newCustodialSavings);
     }

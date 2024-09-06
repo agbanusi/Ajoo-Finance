@@ -28,7 +28,7 @@ contract AaveYieldStrategy is ReentrancyGuard, AccessControl {
     event Withdrawn(address indexed user, uint256 amount);
     event YieldHarvested(address indexed user, uint256 amount);
 
-    constructor(address _pool, address _aToken, address owner, address proxy) {
+    constructor(address _pool, address _aToken, address owner) {
         pool = IPool(_pool);
         aToken = IAToken(_aToken);
         underlyingAsset = IERC20(aToken.UNDERLYING_ASSET_ADDRESS());
@@ -37,7 +37,7 @@ contract AaveYieldStrategy is ReentrancyGuard, AccessControl {
         _grantRole(DEFAULT_ADMIN_ROLE, owner);
         _grantRole(USER_ROLE, owner);
         _grantRole(USER_ROLE, msg.sender);
-        _grantRole(USER_ROLE_ADMIN, proxy);
+        _grantRole(USER_ROLE_ADMIN, owner);
     }
 
     function deposit(uint256 amount) external onlyRole(USER_ROLE) nonReentrant {

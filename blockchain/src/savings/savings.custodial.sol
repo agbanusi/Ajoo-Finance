@@ -66,18 +66,18 @@ contract CustodialSavings is Savings {
         emit FundsWithdrawn(recipient, _token, amount);
         
         // Check if this was the last token with a balance
-        bool allTokensWithdrawn = true;
-        for (uint i = 0; i < acceptedTokens.length; i++) {
-            if (tokenSavings[acceptedTokens[i]] > 0) {
-                allTokensWithdrawn = false;
-                break;
-            }
-        }
+        // bool allTokensWithdrawn = true;
+        // for (uint i = 0; i < acceptedTokens.length; i++) {
+        //     if (tokenSavings[acceptedTokens[i]] > 0) {
+        //         allTokensWithdrawn = false;
+        //         break;
+        //     }
+        // }
         
         // If all tokens have been withdrawn, self-destruct the contract
-        if (allTokensWithdrawn) {
-            selfdestruct(payable(recipient));
-        }
+        // if (allTokensWithdrawn) {
+        //     selfdestruct(payable(recipient));
+        // }
     }
 
     // Override to prevent owner from withdrawing

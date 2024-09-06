@@ -26,7 +26,7 @@ contract MorphoYieldStrategy is ReentrancyGuard, AccessControl {
     event Withdrawn(address indexed user, uint256 amount, uint256 shares);
     event YieldHarvested(address indexed user, uint256 amount);
 
-    constructor(address _usdtToken, address _metaMorphoVault, address owner, address proxy) {
+    constructor(address _usdtToken, address _metaMorphoVault, address owner) {
         usdtToken = IERC20(_usdtToken);
         metaMorphoVault = IMorphoLendingPool(_metaMorphoVault);
 
@@ -34,7 +34,7 @@ contract MorphoYieldStrategy is ReentrancyGuard, AccessControl {
         _grantRole(DEFAULT_ADMIN_ROLE, owner);
         _grantRole(USER_ROLE, owner);
         _grantRole(USER_ROLE, msg.sender);
-        _grantRole(USER_ROLE_ADMIN, proxy);
+        _grantRole(USER_ROLE_ADMIN, owner);
        
     }
 

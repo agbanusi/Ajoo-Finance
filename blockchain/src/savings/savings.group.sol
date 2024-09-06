@@ -5,6 +5,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import "./savings.base.sol";
 
 contract GroupSavings is Ownable, ReentrancyGuard {
     using SafeERC20 for IERC20;
@@ -77,6 +78,7 @@ contract GroupSavings is Ownable, ReentrancyGuard {
 
     function addMember(address _member) public onlyOwner {
         require(!isMember[_member], "Already a member");
+        isSavingsAccount(_member);
         isMember[_member] = true;
         members.push(_member);
         emit MemberAdded(_member);
@@ -120,6 +122,7 @@ contract GroupSavings is Ownable, ReentrancyGuard {
         WithdrawalRequest storage request = withdrawalRequests[_token][_requestId];
         require(!request.approved, "Already approved");
         require(tokenSavings[_token] >= request.amount, "Insufficient balance");
+        isSavingsAccount(request.recipient);
 
         request.approved = true;
         tokenSavings[_token] -= request.amount;
@@ -139,6 +142,7 @@ contract GroupSavings is Ownable, ReentrancyGuard {
 
         for (uint i = 0; i < _recipients.length; i++) {
             require(isMember[_recipients[i]], "Recipient not a member");
+            isSavingsAccount(_recipients[i]);
             IERC20(_token).safeTransfer(_recipients[i], _amounts[i]);
             emit Withdraw(_recipients[i], _token, _amounts[i]);
         }
@@ -153,6 +157,7 @@ contract GroupSavings is Ownable, ReentrancyGuard {
         require(tokenSavings[defaultToken] >= totalAmount, "Insufficient balance");
 
         for (uint i = 0; i < members.length; i++) {
+            isSavingsAccount(members[i]);
             IERC20(defaultToken).safeTransfer(members[i], autoSendSettings.amount);
             emit Withdraw(members[i], defaultToken, autoSendSettings.amount);
         }
@@ -167,6 +172,10 @@ contract GroupSavings is Ownable, ReentrancyGuard {
         require(acceptedTokens.length < 32, "Maximum token limit reached");
         acceptedTokens.push(_token);
         isTokenAccepted[_token] = true;
+    }
+
+    function isSavingsAccount(address _user) public view {
+        require(Savings(_user).savingsCompatible(), "Not a compatible savings account");
     }
 
     function getAcceptedTokens() external view returns (address[] memory) {
