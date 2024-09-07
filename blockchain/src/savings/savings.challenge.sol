@@ -49,8 +49,7 @@ contract SavingsChallenge is Savings {
     function checkChallengeCompletion(address _token) internal {
         Challenge storage challenge = challenges[_token];
         if (!challenge.completed && 
-            tokenSavings[_token] >= challenge.target && 
-            block.timestamp <= challenge.deadline) {
+            tokenSavings[_token] >= challenge.target) {
             challenge.completed = true;
             emit ChallengeCompleted(_token);
         }

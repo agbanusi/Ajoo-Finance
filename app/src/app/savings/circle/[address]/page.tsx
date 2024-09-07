@@ -1,0 +1,133 @@
+"use client";
+
+import React, { useState } from "react";
+import { Button, Card, Table, Modal, Form, Input } from "antd";
+import { useParams } from "next/navigation";
+
+// Mock data for circle details
+const mockCircleDetails = {
+  id: "0x05",
+  name: "0x05",
+  members: 4,
+  amount: 2000,
+  currentAmount: 16000,
+  token: "DAI",
+  isCreator: false,
+  isMember: true,
+};
+
+// Mock data for join requests
+const mockJoinRequests = [
+  { id: 1, name: "Alice", status: "pending" },
+  { id: 2, name: "Bob", status: "pending" },
+];
+
+const CirclePage: React.FC = () => {
+  const params = useParams();
+  const circleId = params.id;
+
+  const [isPaymentModalVisible, setIsPaymentModalVisible] = useState(false);
+  const [paymentAmount, setPaymentAmount] = useState(
+    mockCircleDetails.amount + ""
+  );
+
+  const handlePayment = () => {
+    // TODO: Implement payment logic
+    console.log("Making payment:", paymentAmount);
+    setIsPaymentModalVisible(false);
+    setPaymentAmount("");
+  };
+
+  const handleRequestJoin = () => {
+    // TODO: Implement join request logic
+    console.log("Requesting to join circle:", circleId);
+  };
+
+  const handleAcceptRequest = (requestId: number) => {
+    // TODO: Implement accept request logic
+    console.log("Accepting request:", requestId);
+  };
+
+  const handleRejectRequest = (requestId: number) => {
+    // TODO: Implement reject request logic
+    console.log("Rejecting request:", requestId);
+  };
+
+  const requestColumns = [
+    { title: "Name", dataIndex: "name", key: "name" },
+    {
+      title: "Action",
+      key: "action",
+      render: (text: string, record: any) => (
+        <>
+          <Button
+            onClick={() => handleAcceptRequest(record.id)}
+            className="mr-2"
+          >
+            Accept
+          </Button>
+          <Button onClick={() => handleRejectRequest(record.id)} danger>
+            Reject
+          </Button>
+        </>
+      ),
+    },
+  ];
+
+  return (
+    <div className="p-8">
+      <h1 className="text-2xl font-bold mb-6">{mockCircleDetails.name}</h1>
+      <Card className="text-lg">
+        <p>Members: {mockCircleDetails.members}</p>
+        <p>Contribution Amount: ${mockCircleDetails.amount}</p>
+        <p>Circle Savings Amount: ${mockCircleDetails.currentAmount}</p>
+        {mockCircleDetails.isCreator && (
+          <div className="mt-4">
+            <h2 className="text-xl font-semibold mb-2">Join Requests</h2>
+            <Table columns={requestColumns} dataSource={mockJoinRequests} />
+          </div>
+        )}
+        {mockCircleDetails.isMember ? (
+          <Button
+            type="primary"
+            onClick={() => setIsPaymentModalVisible(true)}
+            className="mt-4"
+          >
+            Make Circle Saving Payment
+          </Button>
+        ) : (
+          <Button type="primary" onClick={handleRequestJoin} className="mt-4">
+            Request to Join
+          </Button>
+        )}
+      </Card>
+
+      <Modal
+        title="Make Circle Saving Payment"
+        visible={isPaymentModalVisible}
+        onOk={handlePayment}
+        onCancel={() => {
+          setIsPaymentModalVisible(false);
+          setPaymentAmount("");
+        }}
+        width={400}
+        centered
+        className="custom-modal"
+      >
+        <Form layout="vertical">
+          <Form.Item label="Payment Amount">
+            <Input
+              type="number"
+              value={paymentAmount}
+              onChange={(e) => setPaymentAmount(e.target.value)}
+              prefix="$"
+              placeholder="Enter amount"
+            />
+          </Form.Item>
+        </Form>
+      </Modal>
+    </div>
+  );
+};
+
+export default CirclePage;

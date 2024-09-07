@@ -9,6 +9,8 @@ contract CreateSavings is Script {
         uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
         address factoryAddress = vm.envAddress("FACTORY_ADDRESS");
         uint8 savingsType = uint8(vm.envUint("SAVINGS_TYPE"));
+        uint256 percent = vm.envUint("INVESTMENT_PERCENTAGE");
+        address strmgr = vm.envAddress("STRATEGY_MANAGER");
         address[] memory acceptedTokens = vm.envAddress("ACCEPTED_TOKENS", ",");
 
         SavingsFactory factory = SavingsFactory(factoryAddress);
@@ -43,6 +45,9 @@ contract CreateSavings is Script {
         } else if (savingsType == 6) {
             savingsName = "Challenge Savings";
             savingsAddress = factory.createChallengeSavings(acceptedTokens);
+        } else if (savingsType == 7) {
+            savingsName = "Investment Savings";
+            savingsAddress = factory.createInvestmentSavings(acceptedTokens, percent, strmgr);
         } else {
             revert("Invalid savings type");
         }
