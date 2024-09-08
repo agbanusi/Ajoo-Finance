@@ -52,7 +52,7 @@ contract CustodialSavings is Savings {
         emit Deposit(msg.sender, _token, _amount);
     }
 
-    function withdraw(address _token) external {
+    function withdraw(address _token) public virtual {
         require(msg.sender == recipient, "Only recipient can withdraw");
         require(block.timestamp >= unlockTime, "Funds are still locked");
         require(isTokenAccepted[_token], "Token not accepted");
@@ -81,7 +81,7 @@ contract CustodialSavings is Savings {
     }
 
     // Override to prevent owner from withdrawing
-    function withdraw(address _token, uint256 _amount) public override {
+    function withdraw(address _token, uint256 _amount) public virtual override {
         revert("Withdrawal not allowed");
     }
 }

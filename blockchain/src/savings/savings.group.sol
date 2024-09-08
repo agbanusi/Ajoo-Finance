@@ -43,13 +43,11 @@ contract GroupSavings is Ownable, ReentrancyGuard {
     event AutoSendSettingsUpdated(bool enabled, uint256 amount, uint256 period);
     event AutoSendExecuted(uint256 totalAmount, uint256 membersCount);
 
-    constructor(address _owner, address[] memory _acceptedTokens, address[] memory _initialMembers) Ownable(_owner) {
+    constructor(address _owner, address[] memory _acceptedTokens, address _initialMember) Ownable(_owner) {
         for (uint i = 0; i < _acceptedTokens.length; i++) {
             addAcceptedToken(_acceptedTokens[i]);
         }
-        for (uint i = 0; i < _initialMembers.length; i++) {
-            addMember(_initialMembers[i]);
-        }
+        _addMember(_initialMember);
         defaultToken = _acceptedTokens[0];
     }
 
@@ -77,8 +75,12 @@ contract GroupSavings is Ownable, ReentrancyGuard {
     }
 
     function addMember(address _member) public onlyOwner {
+        _addMember(_member);
+    }
+
+    function _addMember(address _member) internal {
         require(!isMember[_member], "Already a member");
-        isSavingsAccount(_member);
+        // isSavingsAccount(_member);
         isMember[_member] = true;
         members.push(_member);
         emit MemberAdded(_member);
@@ -122,7 +124,7 @@ contract GroupSavings is Ownable, ReentrancyGuard {
         WithdrawalRequest storage request = withdrawalRequests[_token][_requestId];
         require(!request.approved, "Already approved");
         require(tokenSavings[_token] >= request.amount, "Insufficient balance");
-        isSavingsAccount(request.recipient);
+        // isSavingsAccount(request.recipient);
 
         request.approved = true;
         tokenSavings[_token] -= request.amount;
@@ -167,7 +169,7 @@ contract GroupSavings is Ownable, ReentrancyGuard {
         emit AutoSendExecuted(totalAmount, members.length);
     }
 
-    function addAcceptedToken(address _token) public onlyOwner {
+    function addAcceptedToken(address _token) internal {
         require(!isTokenAccepted[_token], "Token already accepted");
         require(acceptedTokens.length < 32, "Maximum token limit reached");
         acceptedTokens.push(_token);

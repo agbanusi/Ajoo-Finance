@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
@@ -7,14 +7,9 @@ import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import "./savings.base.sol";
 import "./savings.vault.sol";
-import "./savings.investment.sol";
 import "./savings.target.sol";
-
-
 import "./savings.challenge.sol";
-import "./savings.circle.sol";
-import "./savings.group.sol";
-import "./savings.custodial.sol";
+
 
 
 
@@ -23,14 +18,8 @@ contract SavingsFactory is Ownable {
     
     address[] public acceptableTokens;
     mapping(address => bool) public isTokenAcceptable;
-    address COORDINATOR;
-    uint64 subscriptionId;
-    bytes32 keyHash;
-    
 
-    constructor( address _vrfCoordinator,
-        uint64 _subscriptionId,
-        bytes32 _keyHash) Ownable(msg.sender) {}
+    constructor() Ownable(msg.sender) {}
 
     function createBaseSavings(address[] calldata _acceptedTokens) external returns (address) {
         require(_acceptedTokens.length > 0 && _acceptedTokens.length <= 32, "Invalid number of tokens");
@@ -50,16 +39,6 @@ contract SavingsFactory is Ownable {
         return address(newVaultSavings);
     }
 
-    function createInvestmentSavings(address[] calldata _acceptedTokens, uint256 _investmentPercentage, address _yieldStrategyManager) external returns (address) {
-        require(_acceptedTokens.length > 0 && _acceptedTokens.length <= 32, "Invalid number of tokens");
-        require(_yieldStrategyManager != address(0), "Yield strategy manager not set");
-        validateTokens(_acceptedTokens);
-
-        InvestmentSavings newInvestmentSavings = new InvestmentSavings(msg.sender, _acceptedTokens, _yieldStrategyManager, _investmentPercentage);
-        emit SavingsCreated(msg.sender, address(newInvestmentSavings), _acceptedTokens, "Investment");
-        return address(newInvestmentSavings);
-    }
-
     function createTargetSavings(address[] calldata _acceptedTokens, uint256[] calldata _targets) external returns (address) {
         require(_acceptedTokens.length > 0 && _acceptedTokens.length <= 32, "Invalid number of tokens");
         require(_acceptedTokens.length == _targets.length, "Tokens and targets length mismatch");
@@ -77,41 +56,6 @@ contract SavingsFactory is Ownable {
         SavingsChallenge newChallengeSavings = new SavingsChallenge(msg.sender, _acceptedTokens);
         emit SavingsCreated(msg.sender, address(newChallengeSavings), _acceptedTokens, "Challenge");
         return address(newChallengeSavings);
-    }
-
-    function createCustodialSavings(address[] calldata _acceptedTokens, address _recipient, uint256 _unlockPeriod) external returns (address) {
-        require(_acceptedTokens.length > 0 && _acceptedTokens.length <= 32, "Invalid number of tokens");
-        validateTokens(_acceptedTokens);
-
-        CustodialSavings newCustodialSavings = new CustodialSavings(msg.sender, _recipient, _acceptedTokens, block.timestamp + _unlockPeriod);
-        emit SavingsCreated(msg.sender, address(newCustodialSavings), _acceptedTokens, "Custodial");
-        return address(newCustodialSavings);
-    }
-
-    function createCircleSavings(address _acceptedToken, address _recipient, uint256 _periodDuration) external returns (address) {
-        address[] memory tokens = new address[](1);
-        tokens[0] = _acceptedToken;
-        //default 2.5%
-        CircleSavings newCustodialSavings = new CircleSavings(_acceptedToken, msg.sender, owner(),_periodDuration, 250, COORDINATOR, subscriptionId, keyHash);
-        emit SavingsCreated(msg.sender, address(newCustodialSavings), tokens, "Circle");
-        return address(newCustodialSavings);
-    }
-
-    function createGroupSavings(
-        address[] calldata _acceptedTokens,
-        address[] memory _initialMembers
-    ) public returns (address) {
-        require(_acceptedTokens.length > 0 && _acceptedTokens.length <= 32, "Invalid number of tokens");
-        validateTokens(_acceptedTokens);
-
-        GroupSavings newGroupSavings = new GroupSavings(
-            msg.sender,
-            _acceptedTokens,
-            _initialMembers
-        );
-        
-        emit SavingsCreated(msg.sender, address(newGroupSavings), _acceptedTokens, "Group");
-        return address(newGroupSavings);
     }
 
     function updateAcceptableTokens(address[] calldata _acceptedTokens) external onlyOwner {

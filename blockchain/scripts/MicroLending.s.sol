@@ -7,7 +7,7 @@ import "../src/lending/MicroLendingFactory.sol";
 contract CreateMicroLending is Script {
     function run() external {
         uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
-        address factoryAddress = vm.envAddress("FACTORY_ADDRESS");
+        address factoryAddress = vm.envAddress("LENDING_FACTORY_ADDRESS");
         address admin = vm.envAddress("ADMIN_ADDRESS");
         address lendingToken = vm.envAddress("LENDING_TOKEN");
         uint256 contributionAmount = vm.envUint("CONTRIBUTION_AMOUNT");

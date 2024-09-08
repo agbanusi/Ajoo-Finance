@@ -7,6 +7,10 @@ libs = ["lib"]
 sepolia = "${RPC_SEPOLIA}"
 base = "${RPC_BASE}"
 base_sepolia = "${RPC_BASE_SEPOLIA}"
+rootstock = "${RPC_ROOTSTOCK}"
+morph = "${RPC_MORPH}"
+
+
 
 [etherscan]
 sepolia={key="${ETHERSCAN_API_KEY_SEPOLIA}",chainId=11155111}

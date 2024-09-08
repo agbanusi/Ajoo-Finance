@@ -147,7 +147,7 @@ contract CircleSavings is ReentrancyGuard, Ownable, VRFConsumerBaseV2 {
         }
     }
 
-    function withdraw() external nonReentrant {
+    function withdraw() public virtual nonReentrant {
         require(startTime > 0, "Cycle not started");
         require(currentPeriod <= cycleLength, "Cycle completed");
         require(totalContributed == contributionAmount * cycleLength, "Not all contributions received");

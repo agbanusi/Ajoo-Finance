@@ -22,7 +22,8 @@ const navLinks = [
 ];
 
 export const HeaderBar: React.FC<Props> = () => {
-  const { address, xmtpClient, login } = useAuth();
+  // const { address, xmtpClient, login } = useAuth();
+  const { isAuthenticated, address, showLoginModal, logout } = useAuth();
   return (
     <header className="flex items-center justify-between px-8 py-4 bg-gray-900 text-white">
       <div className="flex items-center space-x-4">
@@ -47,10 +48,22 @@ export const HeaderBar: React.FC<Props> = () => {
         ))}
       </nav>
       <div className="flex items-center space-x-4">
-        <Button type="primary" onClick={() => login()}>
-          Web3 Login
-        </Button>
-        <ConnectButton />
+        {/* <Button type="primary" onClick={() => login()}>
+          Login
+        </Button> */}
+        {/* <ConnectButton /> */}
+        {isAuthenticated ? (
+          <>
+            <span className="mr-4">{address}</span>
+            <Button type="primary" onClick={logout}>
+              Logout
+            </Button>
+          </>
+        ) : (
+          <Button type="primary" onClick={showLoginModal}>
+            Login
+          </Button>
+        )}
       </div>
     </header>
   );

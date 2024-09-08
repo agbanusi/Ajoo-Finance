@@ -7,7 +7,7 @@ import "../src/insurance/MicroInsuranceFactory.sol";
 contract CreateMicroInsurance is Script {
     function run() external {
         uint256 deployerPrivateKey = vm.envUint("PRIVATE_KEY");
-        address factoryAddress = vm.envAddress("FACTORY_ADDRESS");
+        address factoryAddress = vm.envAddress("INSURANCE_FACTORY_ADDRESS");
         address paymentToken = vm.envAddress("PAYMENT_TOKEN");
         uint256 monthlyPremium = vm.envUint("MONTHLY_PREMIUM");
         uint256 votingPeriod = vm.envUint("VOTING_PERIOD");
