@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 
-export default function SavingsPage() {
+export default function HomePage() {
   const savingsTypes = [
     {
       title: "Target Savings",
