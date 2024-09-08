@@ -5,33 +5,57 @@ import { Button, Card, Table, Modal, Form, Input } from "antd";
 import { useParams } from "next/navigation";
 import { Client } from "@xmtp/xmtp-js";
 import { useAuth } from "@/context/authContext";
+import {
+  createConsentMessage,
+  createConsentProofPayload,
+} from "@xmtp/consent-proof-signature";
+import { createCircleSavingsInterface } from "@/app/utils/circleSavings";
 
 // Mock data for circle details
 const mockCircleDetails = {
-  id: "0x05",
-  name: "0x05",
+  id: "0x8b198aC597268a0693356970DbA3Ed2828c59208",
+  name: "0x8b198aC597268a0693356970DbA3Ed2828c59208",
   members: 4,
   amount: 2000,
   currentAmount: 16000,
   token: "DAI",
   isCreator: false,
   isMember: true,
+  owner: "0x8b198aC597268a0693356970DbA3Ed2828c59201",
 };
 
 // Mock data for join requests
 const mockJoinRequests = [
-  { id: 1, name: "0x03", status: "pending" },
-  { id: 2, name: "0x08", status: "pending" },
+  {
+    id: "0x8b198aC597268a0693356970DbA3Ed2828c59200",
+    name: "0x03",
+    status: "pending",
+    consentProofPayload: "",
+  },
+  {
+    id: "0x8b198aC597268a0693356970DbA3Ed2828c59202",
+    name: "0x08",
+    status: "pending",
+    consentProofPayload: "",
+  },
 ];
 
 const mockMembers = [
-  { id: 1, name: "0x01", consentProofPayload: "" },
-  { id: 2, name: "0x04", consentProofPayload: "" },
+  {
+    id: "0x8b198aC597268a0693356970DbA3Ed2828c59205",
+    name: "0x8b198aC597268a0693356970DbA3Ed2828c59205",
+    consentProofPayload: "",
+  },
+  {
+    id: "0x8b198aC597268a0693356970DbA3Ed2828c59206",
+    name: "0x8b198aC597268a0693356970DbA3Ed2828c59206",
+    consentProofPayload: "",
+  },
 ];
 
 const CirclePage: React.FC = () => {
   const params = useParams();
-  const { address, provider } = useAuth();
+  const { address, provider, sendTransaction } = useAuth();
   const circleId = params.id;
 
   const [isPaymentModalVisible, setIsPaymentModalVisible] = useState(false);
@@ -46,24 +70,51 @@ const CirclePage: React.FC = () => {
     setPaymentAmount("");
   };
 
-  const handleRequestJoin = () => {
-    // TODO: Implement join request logic
-    console.log("Requesting to join circle:", circleId);
+  const handleRequestJoin = async () => {
+    console.log("Requesting to join group:");
+
+    const timestamp = Date.now();
+    const message = createConsentMessage(mockCircleDetails.owner, timestamp);
+    const signature = await provider.signMessage({
+      account: address,
+      message,
+    });
+    const payloadBytes = createConsentProofPayload(signature, timestamp);
+    const base64Payload = Buffer.from(payloadBytes).toString("base64");
+    //send to backend
+    mockJoinRequests.push({
+      id: "0x8b198aC597268a0693356970DbA3Ed2828c59200",
+      name: "0x8b198aC597268a0693356970DbA3Ed2828c59200",
+      status: "pending",
+      consentProofPayload: base64Payload,
+    });
   };
 
-  const handleAcceptRequest = (requestId: number) => {
-    // TODO: Implement accept request logic
-    console.log("Accepting request:", requestId);
+  const handleAcceptRequest = async (member: string) => {
+    const circleSavings = createCircleSavingsInterface(
+      provider,
+      mockCircleDetails.id
+    );
+    const data = circleSavings.addMemberData(member);
+    await sendTransaction({ data, to: mockCircleDetails.id });
+    const newMember = mockJoinRequests.find((req) => req.id == member);
+    mockMembers.push(newMember!);
+    console.log("Accepting request:", member);
   };
 
-  const handleRejectRequest = (requestId: number) => {
-    // TODO: Implement reject request logic
-    console.log("Rejecting request:", requestId);
+  const handleRejectRequest = async (member: string) => {
+    const circleSavings = createCircleSavingsInterface(
+      provider,
+      mockCircleDetails.id
+    );
+    const data = circleSavings.removeMemberData(member);
+    await sendTransaction({ data, to: mockCircleDetails.id });
+    console.log("Rejecting request:", member);
   };
 
   async function sendContributionReminderMessage() {
     const recipients = mockMembers; //.map(mem=>mem.name);
-    const message = `Reminder to pay the periodic contribution amount to ensure you're not frozen from the circle`
+    const message = `Reminder to pay the periodic contribution amount to ensure you're not frozen from the circle`;
     // In a real application, use the user's wallet
     const xmtp = await Client.create(provider);
 
@@ -137,7 +188,7 @@ const CirclePage: React.FC = () => {
         {mockCircleDetails.isCreator && (
           <Button
             type="primary"
-            onClick={()=>sendContributionReminderMessage()}
+            onClick={() => sendContributionReminderMessage()}
             className="mt-4"
           >
             Send Contribution Reminder

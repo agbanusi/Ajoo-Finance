@@ -14,6 +14,7 @@ import {
 import { useParams } from "next/navigation";
 import { createMicroLendingInterface } from "@/app/utils/lending";
 import { useAuth } from "@/context/authContext";
+import { Client } from "@xmtp/react-sdk";
 
 // Mock data for the lending circle
 const mockLendingCircle = {
@@ -26,6 +27,7 @@ const mockLendingCircle = {
   interestRate: 5,
   members: 10,
   totalFunds: 5000,
+  owner: "0x69030eFC11616251C01f2cA4CA181e7c85E67000",
 };
 
 // Mock data for loan requests
@@ -44,6 +46,23 @@ const MicroLendingCirclePage: React.FC = () => {
     useState(false);
   const [isLoanRequestModalVisible, setIsLoanRequestModalVisible] =
     useState(false);
+
+  async function sendMessage(recipient: string, message: string) {
+    // In a real application, use the user's wallet
+    const xmtp = await Client.create(provider);
+
+    // Iterate over each recipient to send the message
+    // Check if the recipient is activated on the XMTP network
+    if (await xmtp.canMessage(recipient)) {
+      const conversation = await xmtp.conversations.newConversation(recipient);
+      await conversation.send(message);
+      console.log(`Message successfully sent to ${recipient}`);
+    } else {
+      console.log(
+        `Recipient ${recipient} is not activated on the XMTP network.`
+      );
+    }
+  }
 
   const handleContribute = async (values: any) => {
     const microLending = createMicroLendingInterface(
@@ -70,6 +89,7 @@ const MicroLendingCirclePage: React.FC = () => {
     console.log("Requesting loan:", circleId, values);
     setIsLoanRequestModalVisible(false);
     message.success("Loan request submitted successfully!");
+    sendMessage(mockLendingCircle.owner, `New Loan Request`);
   };
 
   const handleVote = async (loanId: string, approve: boolean) => {

@@ -10,20 +10,21 @@ import {
   createConsentProofPayload,
 } from "@xmtp/consent-proof-signature";
 import { useAuth } from "@/context/authContext";
+import { createCircleSavingsInterface } from "@/app/utils/circleSavings";
 
 // Mock data for existing circles
 const mockCircles = [
   {
-    id: "0x01",
-    name: "0x01",
+    id: "0x8b198aC597268a0693356970DbA3Ed2828c59208",
+    name: "0x8b198aC597268a0693356970DbA3Ed2828c59208",
     members: 5,
     goal: 10000,
     currentAmount: 50000,
     token: "USDT",
   },
   {
-    id: "0x02",
-    name: "0x02",
+    id: "0x8b198aC597268a0693356970DbA3Ed2828c59208",
+    name: "0x8b198aC597268a0693356970DbA3Ed2828c59208",
     members: 8,
     goal: 5000,
     currentAmount: 40000,
@@ -51,8 +52,7 @@ const CircleSavingsPage: React.FC = () => {
     setIsCreateModalVisible(false);
   };
 
-  const handleRequestJoin = async (mockGroupDetails:any) => {
-    // TODO: Implement join request logic
+  const handleRequestJoin = async (mockGroupDetails: any) => {
     console.log("Requesting to join group:");
 
     const timestamp = Date.now();
@@ -103,7 +103,11 @@ const CircleSavingsPage: React.FC = () => {
             <p>Contribution Amount: ${circle.goal}</p>
             <p>Total Saved Amount: ${circle.currentAmount}</p>
             <p>Token Contributed: {circle.token}</p>
-            <Button type="primary" className="mt-4" onClick={()=>handleRequestJoin(circle)}>
+            <Button
+              type="primary"
+              className="mt-4"
+              onClick={() => handleRequestJoin(circle)}
+            >
               Request to Join
             </Button>
           </Card>
