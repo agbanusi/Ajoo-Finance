@@ -17,6 +17,7 @@ import {
 const GroupChatPage: React.FC = () => {
   const params = useParams();
   const groupId = params.address;
+  const members: string[] = [];
 
   // const [messages, setMessages] = useState<any[]>([]);
   // const [newMessage, setNewMessage] = useState("");
@@ -26,7 +27,7 @@ const GroupChatPage: React.FC = () => {
   // const [isRequestFundsModalVisible, setIsRequestFundsModalVisible] =
   //   useState(false);
 
-  const { address, xmtpClient, login } = useAuth();
+  const { address, provider } = useAuth();
   const { sendMessage } = useSendMessage();
 
   const [newMessage, setNewMessage] = useState("");
@@ -38,31 +39,26 @@ const GroupChatPage: React.FC = () => {
   const convoTopic = `group-savings-${address}@xmtp.org`;
   const { getCachedByTopic } = useConversation(); //`group-savings-${groupId}@xmtp.org`, xmtpClient);
 
-  // useEffect(() => {
-  //   const initXmtp = async () => {
-  //     // TODO: Replace with actual wallet connection
-  //     const wallet = ethers.Wallet.createRandom();
-  //     const xmtp = await Client.create(wallet);
-  //     setXmtp(xmtp);
+  async function sendBroadcastMessage(recipients: string[], message: string) {
+    // In a real application, use the user's wallet
+    const xmtp = await Client.create(provider);
 
-  //     // TODO: Replace with actual group chat topic
-  //     const conversation = await xmtp.conversations.newConversation(
-  //       `group-savings-${groupId}@xmtp.org`
-  //     );
-  //     setConversation(conversation);
-
-  //     // Load existing messages
-  //     const messages = await conversation.messages();
-  //     setMessages(messages);
-
-  //     // Listen for new messages
-  //     for await (const message of await conversation.streamMessages()) {
-  //       setMessages((prevMessages) => [...prevMessages, message]);
-  //     }
-  //   };
-
-  //   initXmtp();
-  // }, [groupId]);
+    // Iterate over each recipient to send the message
+    for (const recipient of recipients) {
+      // Check if the recipient is activated on the XMTP network
+      if (await xmtp.canMessage(recipient)) {
+        const conversation = await xmtp.conversations.newConversation(
+          recipient
+        );
+        await conversation.send(message);
+        console.log(`Message successfully sent to ${recipient}`);
+      } else {
+        console.log(
+          `Recipient ${recipient} is not activated on the XMTP network.`
+        );
+      }
+    }
+  }
 
   useEffect(() => {
     (async () => {
@@ -74,16 +70,16 @@ const GroupChatPage: React.FC = () => {
     })();
   }, [address, groupId, newMessage]);
 
-  useEffect(() => {
-    if (!address) {
-      login();
-    }
-  }, [address, login]);
+  // useEffect(() => {
+  //   if (!address) {
+  //     login();
+  //   }
+  // }, [address, login]);
 
   const sendNewMessage = async () => {
-    const conversation = await getCachedByTopic(convoTopic);
-    if (newMessage.trim() && conversation) {
-      await sendMessage(conversation, newMessage);
+    // const conversation = await getCachedByTopic(convoTopic);
+    if (newMessage.trim()) {
+      await sendBroadcastMessage(members, newMessage.trim()); //sendMessage(conversation, newMessage);
       setNewMessage("");
     }
   };

@@ -9,7 +9,7 @@ import Image from "next/image";
 // Mock data for existing micro lending circles
 const mockLendingCircles = [
   {
-    id: "0x01",
+    id: "0x69030eFC11616251C01f2cA4CA181e7c85E6708E",
     name: "Community Growth Fund",
     contributionAmount: 100,
     contributionPeriod: 30,
@@ -19,7 +19,7 @@ const mockLendingCircles = [
     totalFunds: 5000,
   },
   {
-    id: "0x02",
+    id: "0x69030eFC11616251C01f2cA4CA181e7c85E6708E",
     name: "Entrepreneurs Support Circle",
     contributionAmount: 500,
     contributionPeriod: 15,

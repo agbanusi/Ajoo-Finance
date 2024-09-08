@@ -1,3 +1,5 @@
+"use client";
+
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { Web3Auth } from "@web3auth/modal";
 import { CHAIN_NAMESPACES } from "@web3auth/base";
@@ -5,6 +7,7 @@ import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { createKintoSDK } from "kinto-web-sdk";
 import { ethers } from "ethers";
 import { useClient } from "@xmtp/react-sdk";
+import { EthereumPrivateKeyProvider } from "@web3auth/ethereum-provider";
 
 type WalletProvider = "web3auth" | "rainbowkit" | "kinto" | null;
 
@@ -37,6 +40,7 @@ interface AuthContextType {
   isLoginModalVisible: boolean;
   showLoginModal: () => void;
   hideLoginModal: () => void;
+  setOpenConnectModal: React.Dispatch<any>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -50,10 +54,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [walletProvider, setWalletProvider] = useState<WalletProvider>(null);
   const [address, setAddress] = useState<string | null>(null);
-  const [provider, setProvider] = useState<any>(null);
+  const [provider, setProvider] =
+    useState<ethers.providers.Web3Provider | null>(null);
   const [isLoginModalVisible, setIsLoginModalVisible] = useState(false);
+  const [openConnectModal, setOpenConnectModal] = useState<any>(null);
 
-  const { openConnectModal } = useConnectModal();
   const [web3auth, setWeb3auth] = useState<Web3Auth | null>(null);
   const [kintoWallet, setKintoWallet] = useState<any | null>(null);
   const { client: xmtpClient, initialize: initializeXmtp } = useClient();
@@ -61,16 +66,28 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const showLoginModal = () => setIsLoginModalVisible(true);
   const hideLoginModal = () => setIsLoginModalVisible(false);
 
+  const chainConfig = {
+    chainNamespace: CHAIN_NAMESPACES.EIP155,
+    chainId: "0xafa", // Ethereum mainnet
+    rpcTarget: "https://rpc-quicknode-holesky.morphl2.io",
+    // Avoid using public rpcTarget in production.
+    // Use services like Infura, Quicknode etc
+    displayName: "Morph Holesky",
+    // blockExplorerUrl: "https://etherscan.io",
+    ticker: "ETH",
+    tickerName: "Ethereum",
+    logo: "https://cryptologos.cc/logos/ethereum-eth-logo.png",
+  };
+
   useEffect(() => {
     const initWeb3Auth = async () => {
+      const privateKeyProvider = new EthereumPrivateKeyProvider({
+        config: { chainConfig },
+      });
       const web3auth = new Web3Auth({
         clientId: clientId,
-        chainConfig: {
-          chainNamespace: CHAIN_NAMESPACES.EIP155,
-          chainId: "0x1", // Ethereum mainnet
-          rpcTarget: process.env.NEXT_PUBLIC_RPC as string,
-        },
-        privateKeyProvider: provider,
+        chainConfig: chainConfig,
+        privateKeyProvider: privateKeyProvider,
       });
       await web3auth.initModal();
       setWeb3auth(web3auth);
@@ -87,9 +104,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     initKintoWallet();
   }, []);
 
+  console.log(openConnectModal);
+
   const login = async (selectedProvider: WalletProvider) => {
     try {
       let web3Provider;
+      console.log(openConnectModal);
 
       switch (selectedProvider) {
         case "web3auth":
@@ -178,7 +198,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     const signer = provider.getSigner();
     const tx = await signer.sendTransaction({
       to: params.to,
-      from: params.from,
+      from: params.from || (address as string),
       value: params.value ? ethers.utils.parseEther(params.value) : undefined,
       data: params.data,
       gasLimit: params.gasLimit,
@@ -228,6 +248,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         isLoginModalVisible,
         showLoginModal,
         hideLoginModal,
+        setOpenConnectModal,
       }}
     >
       {children}

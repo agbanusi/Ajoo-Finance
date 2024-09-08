@@ -1,6 +1,6 @@
 "use client";
 
-import { ConnectButton } from "@rainbow-me/rainbowkit";
+import { ConnectButton, useConnectModal } from "@rainbow-me/rainbowkit";
 import Flex from "antd/es/flex";
 // import Layout from "antd/es/layout";
 import { Header } from "antd/es/layout/layout";
@@ -8,6 +8,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { useAuth } from "@/context/authContext";
 import { Button } from "antd";
+import LoginModal from "./wallet";
+import { useEffect } from "react";
 
 interface Props {}
 
@@ -23,7 +25,19 @@ const navLinks = [
 
 export const HeaderBar: React.FC<Props> = () => {
   // const { address, xmtpClient, login } = useAuth();
-  const { isAuthenticated, address, showLoginModal, logout } = useAuth();
+  const {
+    isAuthenticated,
+    address,
+    showLoginModal,
+    logout,
+    setOpenConnectModal,
+  } = useAuth();
+  const { openConnectModal } = useConnectModal();
+
+  useEffect(() => {
+    console.log({ openConnectModal });
+    setOpenConnectModal(openConnectModal);
+  }, [openConnectModal]);
   return (
     <header className="flex items-center justify-between px-8 py-4 bg-gray-900 text-white">
       <div className="flex items-center space-x-4">
@@ -54,7 +68,9 @@ export const HeaderBar: React.FC<Props> = () => {
         {/* <ConnectButton /> */}
         {isAuthenticated ? (
           <>
-            <span className="mr-4">{address}</span>
+            <span className="mr-4">{`${address?.slice(0, 5)}...${address?.slice(
+              36
+            )}`}</span>
             <Button type="primary" onClick={logout}>
               Logout
             </Button>
@@ -65,6 +81,7 @@ export const HeaderBar: React.FC<Props> = () => {
           </Button>
         )}
       </div>
+      <LoginModal />
     </header>
   );
 };

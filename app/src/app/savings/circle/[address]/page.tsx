@@ -3,6 +3,8 @@
 import React, { useState } from "react";
 import { Button, Card, Table, Modal, Form, Input } from "antd";
 import { useParams } from "next/navigation";
+import { Client } from "@xmtp/xmtp-js";
+import { useAuth } from "@/context/authContext";
 
 // Mock data for circle details
 const mockCircleDetails = {
@@ -18,12 +20,18 @@ const mockCircleDetails = {
 
 // Mock data for join requests
 const mockJoinRequests = [
-  { id: 1, name: "Alice", status: "pending" },
-  { id: 2, name: "Bob", status: "pending" },
+  { id: 1, name: "0x03", status: "pending" },
+  { id: 2, name: "0x08", status: "pending" },
+];
+
+const mockMembers = [
+  { id: 1, name: "0x01", consentProofPayload: "" },
+  { id: 2, name: "0x04", consentProofPayload: "" },
 ];
 
 const CirclePage: React.FC = () => {
   const params = useParams();
+  const { address, provider } = useAuth();
   const circleId = params.id;
 
   const [isPaymentModalVisible, setIsPaymentModalVisible] = useState(false);
@@ -52,6 +60,31 @@ const CirclePage: React.FC = () => {
     // TODO: Implement reject request logic
     console.log("Rejecting request:", requestId);
   };
+
+  async function sendContributionReminderMessage() {
+    const recipients = mockMembers; //.map(mem=>mem.name);
+    const message = `Reminder to pay the periodic contribution amount to ensure you're not frozen from the circle`
+    // In a real application, use the user's wallet
+    const xmtp = await Client.create(provider);
+
+    // Iterate over each recipient to send the message
+    for (const recipient of recipients) {
+      // Check if the recipient is activated on the XMTP network
+      if (await xmtp.canMessage(recipient.name)) {
+        const conversation = await xmtp.conversations.newConversation(
+          recipient.name,
+          undefined,
+          recipient.consentProofPayload as any
+        );
+        await conversation.send(message);
+        console.log(`Message successfully sent to ${recipient}`);
+      } else {
+        console.log(
+          `Recipient ${recipient} is not activated on the XMTP network.`
+        );
+      }
+    }
+  }
 
   const requestColumns = [
     { title: "Name", dataIndex: "name", key: "name" },
@@ -98,6 +131,16 @@ const CirclePage: React.FC = () => {
         ) : (
           <Button type="primary" onClick={handleRequestJoin} className="mt-4">
             Request to Join
+          </Button>
+        )}
+
+        {mockCircleDetails.isCreator && (
+          <Button
+            type="primary"
+            onClick={()=>sendContributionReminderMessage()}
+            className="mt-4"
+          >
+            Send Contribution Reminder
           </Button>
         )}
       </Card>

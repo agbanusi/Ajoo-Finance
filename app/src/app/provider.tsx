@@ -19,11 +19,11 @@ export function Providers({ children }: { children: ReactNode }) {
   return (
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
-        <XMTPProvider>
-          <AuthProvider>
-            <RainbowKitProvider>{children}</RainbowKitProvider>
-          </AuthProvider>
-        </XMTPProvider>
+        <RainbowKitProvider>
+          <XMTPProvider>
+            <AuthProvider>{children}</AuthProvider>
+          </XMTPProvider>
+        </RainbowKitProvider>
       </QueryClientProvider>
     </WagmiProvider>
   );

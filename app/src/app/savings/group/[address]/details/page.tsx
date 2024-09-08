@@ -3,8 +3,13 @@
 import React, { useState } from "react";
 import { Button, Card, message } from "antd";
 import { CopyOutlined } from "@ant-design/icons";
+import {
+  createConsentMessage,
+  createConsentProofPayload,
+} from "@xmtp/consent-proof-signature";
 import Link from "next/link";
 import { useParams } from "next/navigation";
+import { useAuth } from "@/context/authContext";
 
 // Mock data for group details
 const mockGroupDetails = {
@@ -13,15 +18,27 @@ const mockGroupDetails = {
   members: 5,
   totalSavings: 5000,
   goal: 10000,
+  owner: "0x02",
 };
 
 const GroupDetailsPage: React.FC = () => {
   const params = useParams();
-  const groupId = params.id;
+  const groupId = params.address;
+  const { provider, address } = useAuth();
 
-  const handleRequestJoin = () => {
+  const handleRequestJoin = async () => {
     // TODO: Implement join request logic
     console.log("Requesting to join group:", groupId);
+
+    const timestamp = Date.now();
+    const message = createConsentMessage(mockGroupDetails.owner, timestamp);
+    const signature = await provider.signMessage({
+      account: address,
+      message,
+    });
+    const payloadBytes = createConsentProofPayload(signature, timestamp);
+    const base64Payload = Buffer.from(payloadBytes).toString("base64");
+    //send to backend
   };
 
   const handleCopyLink = () => {

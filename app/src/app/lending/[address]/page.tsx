@@ -12,10 +12,12 @@ import {
   message,
 } from "antd";
 import { useParams } from "next/navigation";
+import { createMicroLendingInterface } from "@/app/utils/lending";
+import { useAuth } from "@/context/authContext";
 
 // Mock data for the lending circle
 const mockLendingCircle = {
-  id: 1,
+  id: "0x69030eFC11616251C01f2cA4CA181e7c85E6708E",
   name: "Community Growth Fund",
   contributionAmount: 100,
   contributionPeriod: 30,
@@ -35,6 +37,7 @@ const mockLoanRequests = [
 
 const MicroLendingCirclePage: React.FC = () => {
   const params = useParams();
+  const { provider, address, sendTransaction } = useAuth();
   const circleId = params.id;
 
   const [isContributeModalVisible, setIsContributeModalVisible] =
@@ -42,22 +45,40 @@ const MicroLendingCirclePage: React.FC = () => {
   const [isLoanRequestModalVisible, setIsLoanRequestModalVisible] =
     useState(false);
 
-  const handleContribute = (values: any) => {
-    // TODO: Implement contribution logic
+  const handleContribute = async (values: any) => {
+    const microLending = createMicroLendingInterface(
+      provider,
+      mockLendingCircle.id
+    );
+    const data = microLending.contributeData();
+    await sendTransaction({ data, to: mockLendingCircle.id });
     console.log("Contributing to circle:", circleId, values);
     setIsContributeModalVisible(false);
     message.success("Contribution successful!");
   };
 
-  const handleLoanRequest = (values: any) => {
-    // TODO: Implement loan request logic
+  const handleLoanRequest = async (values: any) => {
+    const microLending = createMicroLendingInterface(
+      provider,
+      mockLendingCircle.id
+    );
+    const data = microLending.requestLoanData(
+      values.amount,
+      +values.duration * 24 * 3600 + ""
+    );
+    await sendTransaction({ data, to: mockLendingCircle.id });
     console.log("Requesting loan:", circleId, values);
     setIsLoanRequestModalVisible(false);
     message.success("Loan request submitted successfully!");
   };
 
-  const handleVote = (loanId: number, approve: boolean) => {
-    // TODO: Implement voting logic
+  const handleVote = async (loanId: string, approve: boolean) => {
+    const microLending = createMicroLendingInterface(
+      provider,
+      mockLendingCircle.id
+    );
+    const data = microLending.voteData(loanId, approve);
+    await sendTransaction({ data, to: mockLendingCircle.id });
     console.log("Voting on loan:", loanId, approve ? "Approve" : "Reject");
     message.success(`Vote submitted: ${approve ? "Approved" : "Rejected"}`);
   };

@@ -5,6 +5,11 @@ import { Button, Card, Modal, Form, Input, Select } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import Link from "next/link";
 import { tokenList } from "@/app/utils/utils";
+import {
+  createConsentMessage,
+  createConsentProofPayload,
+} from "@xmtp/consent-proof-signature";
+import { useAuth } from "@/context/authContext";
 
 // Mock data for existing circles
 const mockCircles = [
@@ -37,12 +42,28 @@ const userCreatedCircle = {
 };
 
 const CircleSavingsPage: React.FC = () => {
+  const { provider, address } = useAuth();
   const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
 
   const handleCreateCircle = (values: any) => {
     // TODO: Implement circle creation logic
     console.log("Creating circle:", values);
     setIsCreateModalVisible(false);
+  };
+
+  const handleRequestJoin = async (mockGroupDetails:any) => {
+    // TODO: Implement join request logic
+    console.log("Requesting to join group:");
+
+    const timestamp = Date.now();
+    const message = createConsentMessage(mockGroupDetails.owner, timestamp);
+    const signature = await provider.signMessage({
+      account: address,
+      message,
+    });
+    const payloadBytes = createConsentProofPayload(signature, timestamp);
+    const base64Payload = Buffer.from(payloadBytes).toString("base64");
+    //send to backend
   };
 
   return (
@@ -82,7 +103,7 @@ const CircleSavingsPage: React.FC = () => {
             <p>Contribution Amount: ${circle.goal}</p>
             <p>Total Saved Amount: ${circle.currentAmount}</p>
             <p>Token Contributed: {circle.token}</p>
-            <Button type="primary" className="mt-4">
+            <Button type="primary" className="mt-4" onClick={()=>handleRequestJoin(circle)}>
               Request to Join
             </Button>
           </Card>
