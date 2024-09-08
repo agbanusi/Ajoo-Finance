@@ -74,9 +74,19 @@ export default function SavingsPage() {
       <h1 className="text-4xl font-bold mb-4">
         Welcome to Ajoo Finance Savings
       </h1>
+      <p className="text-2xl text-center mb-12 max-w-2xl">
+        Novel Defi Solutions on Different Savings, Uncollateralized
+        micro-lending, micro-insurance and DCA investments.
+      </p>
+
       <p className="text-xl text-center mb-12 max-w-2xl">
-        Discover smarter ways to save and grow your money with our diverse range
-        of savings options.
+        Ajoo Finance is a web3 personal finance platform offering diverse
+        savings solutions especially our novel circle savings,
+        micro-investments, uncollateralized lending services, custodial features
+        for charity gofundme setup and family trust funds, and micro-insurance
+        options. It emphasizes cross-chain compatibility, and decentralized
+        governance to provide secure, transparent, and innovative financial
+        solutions.
       </p>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
