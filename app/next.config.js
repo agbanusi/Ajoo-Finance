@@ -1,12 +1,15 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  transpilePackages: ["antd"],
+  experimental: {
+    serverComponentsExternalPackages: ["@xmtp/user-preferences-bindings-wasm"],
+  },
   webpack: (config, { isServer }) => {
     if (!isServer) {
       config.resolve.fallback = {
         ...config.resolve.fallback,
         fs: false,
       };
+      config.experiments.asyncWebAssembly = true;
     }
     return config;
   },

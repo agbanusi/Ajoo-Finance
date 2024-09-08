@@ -10,6 +10,7 @@ import { useAuth } from "@/context/authContext";
 import { Button } from "antd";
 import LoginModal from "./wallet";
 import { useEffect } from "react";
+import { useDisconnect } from "wagmi";
 
 interface Props {}
 
@@ -32,12 +33,10 @@ export const HeaderBar: React.FC<Props> = () => {
     logout,
     setOpenConnectModal,
   } = useAuth();
-  const { openConnectModal } = useConnectModal();
 
-  useEffect(() => {
-    console.log({ openConnectModal });
-    setOpenConnectModal(openConnectModal);
-  }, [openConnectModal]);
+  // useEffect(() => {
+  //   setOpenConnectModal(openConnectModal);
+  // }, [openConnectModal]);
   return (
     <header className="flex items-center justify-between px-8 py-4 bg-gray-900 text-white">
       <div className="flex items-center space-x-4">

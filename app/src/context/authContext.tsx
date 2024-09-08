@@ -8,6 +8,7 @@ import { createKintoSDK } from "kinto-web-sdk";
 import { ethers } from "ethers";
 import { useClient } from "@xmtp/react-sdk";
 import { EthereumPrivateKeyProvider } from "@web3auth/ethereum-provider";
+import { useDisconnect } from "wagmi";
 
 type WalletProvider = "web3auth" | "rainbowkit" | "kinto" | null;
 
@@ -51,6 +52,8 @@ const appAddress = "";
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
+  const { disconnect } = useDisconnect();
+  const { openConnectModal: openMainConnectModal } = useConnectModal();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [walletProvider, setWalletProvider] = useState<WalletProvider>(null);
   const [address, setAddress] = useState<string | null>(null);
@@ -118,8 +121,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           }
           break;
         case "rainbowkit":
-          if (openConnectModal) {
-            openConnectModal();
+          disconnect();
+          if (openMainConnectModal) {
+            openMainConnectModal();
             return;
           }
           break;
