@@ -60,15 +60,15 @@ const GroupChatPage: React.FC = () => {
     }
   }
 
-  useEffect(() => {
-    (async () => {
-      const conversation = await getCachedByTopic(convoTopic);
-      const { messages } = useMessages(
-        conversation as CachedConversation<ContentTypeMetadata>
-      );
-      setMessages(messages);
-    })();
-  }, [address, groupId, newMessage]);
+  // useEffect(() => {
+  //   (async () => {
+  //     const conversation = await getCachedByTopic(convoTopic);
+  //     const { messages } = useMessages(
+  //       conversation as CachedConversation<ContentTypeMetadata>
+  //     );
+  //     setMessages(messages);
+  //   })();
+  // }, [address, groupId, newMessage]);
 
   // useEffect(() => {
   //   if (!address) {
