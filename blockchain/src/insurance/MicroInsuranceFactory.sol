@@ -11,7 +11,7 @@ contract MicroInsuranceFactory {
         uint256 _monthlyPremium,
         uint256 _votingPeriod,
         uint256 _claimVotingThreshold,
-        uint256 _maxClaimAmount
+        uint256 _maxClaimAmount, string memory _name
     ) external returns (address) {
         MicroInsurance newLending = new MicroInsurance(
             msg.sender,
@@ -19,7 +19,8 @@ contract MicroInsuranceFactory {
             _monthlyPremium,
             _votingPeriod,
             _claimVotingThreshold,
-            _maxClaimAmount
+            _maxClaimAmount,
+            _name
         );
 
         emit MicroInsuranceCreated(address(newLending), msg.sender);

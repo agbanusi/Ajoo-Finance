@@ -17,8 +17,8 @@ contract CustodialSavingsKYC is CustodialSavings {
         address _recipient,
         address[] memory _acceptedTokens,
         uint256 _unlockTime,
-        address _kintoIDAddress
-    ) CustodialSavings(_creator, _recipient, _acceptedTokens, _unlockTime) {
+        address _kintoIDAddress, string memory _name
+    ) CustodialSavings(_creator, _recipient, _acceptedTokens, _unlockTime, _name) {
         require(_kintoIDAddress != address(0), "Invalid KintoID address");
         kintoID = IKintoID(_kintoIDAddress);
     }

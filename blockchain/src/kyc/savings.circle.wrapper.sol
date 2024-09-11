@@ -21,7 +21,7 @@ contract CircleSavingsKYC is CircleSavings {
         address _vrfCoordinator,
         uint64 _subscriptionId,
         bytes32 _keyHash,
-        address _kintoIDAddress
+        address _kintoIDAddress, string memory _name
     ) CircleSavings(
         _token,
         _admin,
@@ -30,7 +30,8 @@ contract CircleSavingsKYC is CircleSavings {
         _protocolTaxRate,
         _vrfCoordinator,
         _subscriptionId,
-        _keyHash
+        _keyHash,
+        _name
     ) {
         require(_kintoIDAddress != address(0), "Invalid KintoID address");
         kintoID = IKintoID(_kintoIDAddress);

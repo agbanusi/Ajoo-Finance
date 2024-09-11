@@ -25,6 +25,7 @@ contract GroupSavings is Ownable, ReentrancyGuard {
 
     address public defaultToken;
     address public operator;
+    string public name;
     mapping(address => uint256) public tokenSavings;
     address[] public acceptedTokens;
     mapping(address => bool) public isTokenAccepted;
@@ -43,12 +44,13 @@ contract GroupSavings is Ownable, ReentrancyGuard {
     event AutoSendSettingsUpdated(bool enabled, uint256 amount, uint256 period);
     event AutoSendExecuted(uint256 totalAmount, uint256 membersCount);
 
-    constructor(address _owner, address[] memory _acceptedTokens, address _initialMember) Ownable(_owner) {
+    constructor(address _owner, address[] memory _acceptedTokens, address _initialMember, string memory _name) Ownable(_owner) {
         for (uint i = 0; i < _acceptedTokens.length; i++) {
             addAcceptedToken(_acceptedTokens[i]);
         }
         _addMember(_initialMember);
         defaultToken = _acceptedTokens[0];
+        name = _name;
     }
 
     modifier onlyMember() {

@@ -20,6 +20,7 @@ contract MicroLending is AccessControl, ReentrancyGuard {
 
     uint256 public totalInterestEarned;
     uint256 public memberCount;
+    string public name;
 
     struct LoanRequest {
         address borrower;
@@ -57,7 +58,8 @@ contract MicroLending is AccessControl, ReentrancyGuard {
         uint256 _contributionAmount,
         uint256 _contributionPeriod,
         uint256 _votingPeriod,
-        uint256 _interestRate
+        uint256 _interestRate,
+        string memory _name
     ) {
         _grantRole(DEFAULT_ADMIN_ROLE, _admin);
         _grantRole(ADMIN_ROLE, _admin);
@@ -66,6 +68,7 @@ contract MicroLending is AccessControl, ReentrancyGuard {
         contributionPeriod = _contributionPeriod;
         votingPeriod = _votingPeriod;
         interestRate = _interestRate;
+        name = _name;
     }
 
     function requestMembership() external {

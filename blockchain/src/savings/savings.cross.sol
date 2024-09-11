@@ -39,8 +39,9 @@ contract CrossChainSavings is Savings {
     constructor(
         address _owner,
         address[] memory _acceptedTokens,
-        address _protocolCrossChainManager
-    ) Savings(_owner, _acceptedTokens) {
+        address _protocolCrossChainManager,
+        string memory _name
+    ) Savings(_owner, _acceptedTokens, _name) {
         protocolCrossChainManager = IProtocolCrossChainManager(_protocolCrossChainManager);
     }
 

@@ -12,6 +12,9 @@ contract Savings is Ownable, ReentrancyGuard {
     bool public autoSaveEnabled;
     address public operator;
     address public defaultToken;
+    string public name;
+
+
     mapping(address => uint256) public tokenSavings;
     address[] public acceptedTokens;
     mapping(address => bool) public isTokenAccepted;
@@ -20,8 +23,8 @@ contract Savings is Ownable, ReentrancyGuard {
     event Withdraw(address indexed user, address indexed token, uint256 amount);
     event AutoSaveToggled(bool enabled, address defaultToken, address operator);
 
-    constructor(address _owner, address[] memory _acceptedTokens)Ownable(_owner) {
-        // _transferOwnership(_owner);
+    constructor(address _owner, address[] memory _acceptedTokens, string memory _name)Ownable(_owner) {
+        name = _name;
         for (uint i = 0; i < _acceptedTokens.length; i++) {
             addAcceptedToken(_acceptedTokens[i]);
         }

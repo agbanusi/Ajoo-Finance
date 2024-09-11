@@ -21,8 +21,8 @@ contract CrossChainSavingsFactory is Ownable {
 
     constructor() Ownable(msg.sender) {}
 
-    function createCrossChainCircleSavings(address[] calldata _acceptedTokens, address _protocolCrossChainManager) external returns (address) {
-        CrossChainSavings newCustodialSavings = new CrossChainSavings(msg.sender, _acceptedTokens, _protocolCrossChainManager);
+    function createCrossChainCircleSavings(address[] calldata _acceptedTokens, address _protocolCrossChainManager, string memory _name) external returns (address) {
+        CrossChainSavings newCustodialSavings = new CrossChainSavings(msg.sender, _acceptedTokens, _protocolCrossChainManager, _name);
         emit SavingsCreated(msg.sender, address(newCustodialSavings), _acceptedTokens, "Circle");
         return address(newCustodialSavings);
     }

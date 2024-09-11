@@ -22,8 +22,9 @@ contract InvestmentSavings is Savings {
         address _owner,
         address[] memory _acceptedTokens,
         address _yieldStrategyManager,
-        uint256 _investmentPercentage
-    ) Savings(_owner, _acceptedTokens) {
+        uint256 _investmentPercentage,
+        string memory _name
+    ) Savings(_owner, _acceptedTokens, _name) {
         require(_investmentPercentage <= BASE, "Invalid investment percentage");
         yieldStrategyManager = IERC4626(_yieldStrategyManager);
         investmentToken = yieldStrategyManager.asset(); //usually usdt/usdc/weth

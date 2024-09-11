@@ -19,8 +19,9 @@ contract VaultSavings is Savings {
     constructor(
         address _owner,
         address[] memory _acceptedTokens,
-        uint256 _lockPeriod
-    ) Savings(_owner, _acceptedTokens) {
+        uint256 _lockPeriod,
+        string memory _name
+    ) Savings(_owner, _acceptedTokens, _name) {
         lockPeriod = _lockPeriod;
         startTime = block.timestamp;
         emit LockPeriodSet(_lockPeriod);

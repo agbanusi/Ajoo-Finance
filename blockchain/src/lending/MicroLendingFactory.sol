@@ -12,7 +12,7 @@ contract MicroLendingFactory {
         uint256 _contributionAmount,
         uint256 _contributionPeriod,
         uint256 _votingPeriod,
-        uint256 _interestRate
+        uint256 _interestRate, string memory _name
     ) external returns (address) {
         MicroLending newLending = new MicroLending(
             _admin,
@@ -20,7 +20,8 @@ contract MicroLendingFactory {
             _contributionAmount,
             _contributionPeriod,
             _votingPeriod,
-            _interestRate
+            _interestRate,
+            _name
         );
 
         emit MicroLendingCreated(address(newLending), _admin);

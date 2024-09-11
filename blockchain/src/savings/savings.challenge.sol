@@ -15,8 +15,8 @@ contract SavingsChallenge is Savings {
     event ChallengeCreated(address indexed token, uint256 target, uint256 deadline);
     event ChallengeCompleted(address indexed token);
 
-    constructor(address _user, address[] memory _acceptedTokens)
-        Savings(_user, _acceptedTokens)
+    constructor(address _user, address[] memory _acceptedTokens, string memory _name)
+        Savings(_user, _acceptedTokens, _name)
     {
         _transferOwnership(_user);
     }
@@ -48,7 +48,7 @@ contract SavingsChallenge is Savings {
 
     function checkChallengeCompletion(address _token) internal {
         Challenge storage challenge = challenges[_token];
-        if (!challenge.completed && 
+        if (!challenge.completed &&
             tokenSavings[_token] >= challenge.target) {
             challenge.completed = true;
             emit ChallengeCompleted(_token);
@@ -57,7 +57,7 @@ contract SavingsChallenge is Savings {
 
     function withdraw(address _token, uint256 _amount) public override onlyOwner nonReentrant {
         Challenge storage challenge = challenges[_token];
-        require(challenge.completed || block.timestamp > challenge.deadline || challenge.target == 0, 
+        require(challenge.completed || block.timestamp > challenge.deadline || challenge.target == 0,
                 "Challenge not completed and deadline not reached");
         super.withdraw(_token, _amount);
     }

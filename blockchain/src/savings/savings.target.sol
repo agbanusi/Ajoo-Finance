@@ -17,8 +17,9 @@ contract TargetSavings is Savings {
     constructor(
         address _owner,
         address[] memory _acceptedTokens,
-        uint256[] memory _targets
-    ) Savings(_owner, _acceptedTokens) {
+        uint256[] memory _targets,
+        string memory _name
+    ) Savings(_owner, _acceptedTokens, _name) {
         require(_acceptedTokens.length == _targets.length, "Tokens and targets length mismatch");
         for (uint i = 0; i < _acceptedTokens.length; i++) {
             tokenTargets[_acceptedTokens[i]] = _targets[i];

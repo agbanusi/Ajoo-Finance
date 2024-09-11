@@ -21,21 +21,21 @@ contract SavingsFactory2 is Ownable {
 
     constructor() Ownable(msg.sender) {}
 
-    function createCustodialSavings(address[] calldata _acceptedTokens, address _recipient, uint256 _unlockPeriod) external returns (address) {
+    function createCustodialSavings(address[] calldata _acceptedTokens, address _recipient, uint256 _unlockPeriod, string memory _name) external returns (address) {
         require(_acceptedTokens.length > 0 && _acceptedTokens.length <= 32, "Invalid number of tokens");
         validateTokens(_acceptedTokens);
 
-        CustodialSavings newCustodialSavings = new CustodialSavings(msg.sender, _recipient, _acceptedTokens, block.timestamp + _unlockPeriod);
+        CustodialSavings newCustodialSavings = new CustodialSavings(msg.sender, _recipient, _acceptedTokens, block.timestamp + _unlockPeriod, _name);
         emit SavingsCreated(msg.sender, address(newCustodialSavings), _acceptedTokens, "Custodial");
         return address(newCustodialSavings);
     }
 
-     function createInvestmentSavings(address[] calldata _acceptedTokens, uint256 _investmentPercentage, address _yieldStrategyManager) external returns (address) {
+     function createInvestmentSavings(address[] calldata _acceptedTokens, uint256 _investmentPercentage, address _yieldStrategyManager, string memory _name) external returns (address) {
         require(_acceptedTokens.length > 0 && _acceptedTokens.length <= 32, "Invalid number of tokens");
         require(_yieldStrategyManager != address(0), "Yield strategy manager not set");
         validateTokens(_acceptedTokens);
 
-        InvestmentSavings newInvestmentSavings = new InvestmentSavings(msg.sender, _acceptedTokens, _yieldStrategyManager, _investmentPercentage);
+        InvestmentSavings newInvestmentSavings = new InvestmentSavings(msg.sender, _acceptedTokens, _yieldStrategyManager, _investmentPercentage, _name);
         emit SavingsCreated(msg.sender, address(newInvestmentSavings), _acceptedTokens, "Investment");
         return address(newInvestmentSavings);
     }

@@ -21,39 +21,39 @@ contract SavingsFactory is Ownable {
 
     constructor() Ownable(msg.sender) {}
 
-    function createBaseSavings(address[] calldata _acceptedTokens) external returns (address) {
+    function createBaseSavings(address[] calldata _acceptedTokens, string memory _name) external returns (address) {
         require(_acceptedTokens.length > 0 && _acceptedTokens.length <= 32, "Invalid number of tokens");
         validateTokens(_acceptedTokens);
 
-        Savings newSavings = new Savings(msg.sender, _acceptedTokens);
+        Savings newSavings = new Savings(msg.sender, _acceptedTokens, _name);
         emit SavingsCreated(msg.sender, address(newSavings), _acceptedTokens, "Base");
         return address(newSavings);
     }
 
-    function createVaultSavings(address[] calldata _acceptedTokens, uint256 _lockPeriod) external returns (address) {
+    function createVaultSavings(address[] calldata _acceptedTokens, uint256 _lockPeriod, string memory _name) external returns (address) {
         require(_acceptedTokens.length > 0 && _acceptedTokens.length <= 32, "Invalid number of tokens");
         validateTokens(_acceptedTokens);
 
-        VaultSavings newVaultSavings = new VaultSavings(msg.sender, _acceptedTokens, _lockPeriod);
+        VaultSavings newVaultSavings = new VaultSavings(msg.sender, _acceptedTokens, _lockPeriod, _name);
         emit SavingsCreated(msg.sender, address(newVaultSavings), _acceptedTokens, "Vault");
         return address(newVaultSavings);
     }
 
-    function createTargetSavings(address[] calldata _acceptedTokens, uint256[] calldata _targets) external returns (address) {
+    function createTargetSavings(address[] calldata _acceptedTokens, uint256[] calldata _targets, string memory _name) external returns (address) {
         require(_acceptedTokens.length > 0 && _acceptedTokens.length <= 32, "Invalid number of tokens");
         require(_acceptedTokens.length == _targets.length, "Tokens and targets length mismatch");
         validateTokens(_acceptedTokens);
 
-        TargetSavings newTargetSavings = new TargetSavings(msg.sender, _acceptedTokens, _targets);
+        TargetSavings newTargetSavings = new TargetSavings(msg.sender, _acceptedTokens, _targets, _name);
         emit SavingsCreated(msg.sender, address(newTargetSavings), _acceptedTokens, "Target");
         return address(newTargetSavings);
     }
 
-    function createChallengeSavings(address[] calldata _acceptedTokens) external returns (address) {
+    function createChallengeSavings(address[] calldata _acceptedTokens, string memory _name) external returns (address) {
         require(_acceptedTokens.length > 0 && _acceptedTokens.length <= 32, "Invalid number of tokens");
         validateTokens(_acceptedTokens);
 
-        SavingsChallenge newChallengeSavings = new SavingsChallenge(msg.sender, _acceptedTokens);
+        SavingsChallenge newChallengeSavings = new SavingsChallenge(msg.sender, _acceptedTokens, _name);
         emit SavingsCreated(msg.sender, address(newChallengeSavings), _acceptedTokens, "Challenge");
         return address(newChallengeSavings);
     }

@@ -33,6 +33,7 @@ contract CircleSavings is ReentrancyGuard, Ownable, VRFConsumerBaseV2 {
     uint256 public constant MIN_PERIOD_DURATION = 1 days;
     uint256 public protocolTaxRate; // in basis points (e.g., 100 = 1%)
     address public taxCollector;
+    string public name;
     
     VRFCoordinatorV2Interface COORDINATOR;
     uint64 subscriptionId;
@@ -65,7 +66,8 @@ contract CircleSavings is ReentrancyGuard, Ownable, VRFConsumerBaseV2 {
         uint256 _protocolTaxRate,
         address _vrfCoordinator,
         uint64 _subscriptionId,
-        bytes32 _keyHash
+        bytes32 _keyHash,
+        string memory _name
     ) Ownable(_admin) VRFConsumerBaseV2(_vrfCoordinator) {
         require(_periodDuration >= MIN_PERIOD_DURATION, "Period duration too short");
         require(_protocolTaxRate <= 1000, "Tax rate too high"); // Max 10%
@@ -77,6 +79,7 @@ contract CircleSavings is ReentrancyGuard, Ownable, VRFConsumerBaseV2 {
         COORDINATOR = VRFCoordinatorV2Interface(_vrfCoordinator);
         subscriptionId = _subscriptionId;
         keyHash = _keyHash;
+        name = _name;
     }
 
     function addMember(address _member) external onlyOwner {

@@ -17,6 +17,8 @@ contract MicroInsurance is AccessControl, ReentrancyGuard {
     uint256 public votingPeriod;
     uint256 public claimVotingThreshold; // Percentage of total members needed to pass a claim (in basis points)
     uint256 public maxClaimAmount;
+    string public name;
+
 
     struct Member {
         bool isActive;
@@ -56,7 +58,8 @@ contract MicroInsurance is AccessControl, ReentrancyGuard {
         uint256 _monthlyPremium,
         uint256 _votingPeriod,
         uint256 _claimVotingThreshold,
-        uint256 _maxClaimAmount
+        uint256 _maxClaimAmount,
+        string memory _name
     ) {
         _grantRole(DEFAULT_ADMIN_ROLE, _admin);
         _grantRole(ADMIN_ROLE, _admin);
@@ -65,6 +68,7 @@ contract MicroInsurance is AccessControl, ReentrancyGuard {
         votingPeriod = _votingPeriod;
         claimVotingThreshold = _claimVotingThreshold;
         maxClaimAmount = _maxClaimAmount;
+        name =_name;
     }
 
     function requestMembership() external {

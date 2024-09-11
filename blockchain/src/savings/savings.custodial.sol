@@ -20,8 +20,9 @@ contract CustodialSavings is Savings {
         address _creator,
         address _recipient,
         address[] memory _acceptedTokens,
-        uint256 _unlockTime
-    ) Savings(_creator, _acceptedTokens) {
+        uint256 _unlockTime,
+        string memory _name
+    ) Savings(_creator, _acceptedTokens, _name) {
         require(_creator != _recipient, "Creator cannot be recipient");
         require(_unlockTime > block.timestamp, "unlock time is in the past");
         creator = _creator;
