@@ -4,6 +4,8 @@ pragma solidity ^0.8.20;
 import "./MicroLending.sol";
 
 contract MicroLendingFactory {
+    mapping(uint=>address) public lendingCircles;
+    uint public id;
     event MicroLendingCreated(address indexed lendingContract, address indexed admin);
 
     function createMicroLending(
@@ -23,6 +25,8 @@ contract MicroLendingFactory {
             _interestRate,
             _name
         );
+        lendingCircles[id] = address(newLending);
+        id++;
 
         emit MicroLendingCreated(address(newLending), _admin);
         return address(newLending);

@@ -92,6 +92,10 @@ contract Savings is Ownable, ReentrancyGuard {
     function savingsCompatible() external pure returns (bool){
         return true;
     }
+
+    function savingsType() public virtual view returns (string memory){
+        return "BASE";
+    }
 }
 
 // no rebase

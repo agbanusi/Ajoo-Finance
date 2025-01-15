@@ -2,12 +2,12 @@
 
 import React from "react";
 import { Modal, Button } from "antd";
-import { useAuth } from "@/context/authContext";
+import { useAuth } from "../context/authContext";
 
 const LoginModal: React.FC = () => {
   const { isLoginModalVisible, hideLoginModal, login } = useAuth();
 
-  const handleLogin = async (provider: "web3auth" | "rainbowkit" | "kinto") => {
+  const handleLogin = async (provider: "web3auth" | "rainbowkit") => {
     try {
       await login(provider);
       hideLoginModal();
@@ -29,9 +29,6 @@ const LoginModal: React.FC = () => {
         </Button>
         <Button block onClick={() => handleLogin("rainbowkit")}>
           Login with RainbowKit
-        </Button>
-        <Button block onClick={() => handleLogin("kinto")}>
-          Login with Kinto
         </Button>
       </div>
     </Modal>

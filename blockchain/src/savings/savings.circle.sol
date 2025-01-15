@@ -288,4 +288,8 @@ contract CircleSavings is ReentrancyGuard, Ownable, VRFConsumerBaseV2 {
     function updateCallbackGasLimit(uint32 _callbackGasLimit) external onlyOwner {
         callbackGasLimit = _callbackGasLimit;
     }
+
+    function savingsType() public virtual view returns (string memory){
+        return "CIRCLE";
+    }
 }

@@ -1,16 +1,10 @@
 "use client";
 
-import { ConnectButton, useConnectModal } from "@rainbow-me/rainbowkit";
-import Flex from "antd/es/flex";
-// import Layout from "antd/es/layout";
-import { Header } from "antd/es/layout/layout";
-import Link from "next/link";
-import Image from "next/image";
-import { useAuth } from "@/context/authContext";
-import { Button } from "antd";
+import { Button, Image } from "antd";
 import LoginModal from "./wallet";
-import { useEffect } from "react";
-import { useDisconnect } from "wagmi";
+import { useAuth } from "../context/authContext";
+import { Link } from "react-router-dom";
+import ajoo from "/logo.svg";
 
 interface Props {}
 
@@ -31,17 +25,17 @@ export const HeaderBar: React.FC<Props> = () => {
     address,
     showLoginModal,
     logout,
-    setOpenConnectModal,
+    // setOpenConnectModal,
   } = useAuth();
 
   // useEffect(() => {
   //   setOpenConnectModal(openConnectModal);
   // }, [openConnectModal]);
   return (
-    <header className="flex items-center justify-between px-8 py-4 bg-gray-900 text-white">
+    <header className="w-full flex items-center justify-between px-8 py-4 bg-gray-900 text-white">
       <div className="flex items-center space-x-4">
         <Image
-          src="/ajoo.png"
+          src={ajoo}
           alt="Ajoo Finance Logo"
           width={40}
           height={40}
@@ -53,7 +47,7 @@ export const HeaderBar: React.FC<Props> = () => {
         {navLinks.map((nav) => (
           <Link
             key={nav.name}
-            href={nav.link}
+            to={nav.link}
             className="px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white transition duration-150 ease-in-out"
           >
             {nav.name}

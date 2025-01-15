@@ -1,0 +1,142 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 214, 219, 220;
+  --background-end-rgb: 255, 255, 255;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --foreground-rgb: 255, 255, 255;
+    --background-start-rgb: 0, 0, 0;
+    --background-end-rgb: 0, 0, 0;
+  }
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+      to bottom,
+      transparent,
+      rgb(var(--background-end-rgb))
+    )
+    rgb(var(--background-start-rgb));
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+.custom-modal .ant-modal-content {
+  background-color: #222222;
+  color: #ffffff;
+  width: 600px;
+}
+
+.custom-modal .ant-modal-header {
+  background-color: #222222;
+  border-bottom: 1px solid #333;
+}
+
+.custom-modal .ant-modal-title {
+  color: #ffffff;
+}
+
+.custom-modal .ant-modal-close-x {
+  color: #ffffff;
+}
+
+.custom-modal .ant-form-item-label > label {
+  color: #ffffff;
+}
+
+.custom-modal .ant-input,
+.custom-modal .ant-select-selector,
+.custom-modal .ant-select-selection-search-input {
+  background-color: #2f2f2f;
+  color: #ffffff;
+  border-color: #444;
+}
+
+.custom-modal .ant-select-selector,
+.custom-modal .ant-select-selection-search-input {
+  background-color: #2f2f2f !important;
+  color: #ffffff;
+  border-color: #444;
+}
+
+.custom-modal .ant-select-arrow {
+  color: #ffffff;
+}
+
+.custom-modal .ant-btn-primary {
+  background-color: #1890ff;
+  border-color: #1890ff;
+}
+
+.custom-modal .ant-btn-primary:hover {
+  background-color: #40a9ff;
+  border-color: #40a9ff;
+}
+
+/* Dropdown styles */
+.custom-modal .ant-select-dropdown {
+  background-color: #2f2f2f;
+  border: 1px solid #444;
+}
+
+.custom-modal .ant-select-item {
+  color: #ffffff;
+}
+
+.custom-modal
+  .ant-select-item-option-selected:not(.ant-select-item-option-disabled) {
+  background-color: #1890ff;
+}
+
+.custom-modal
+  .ant-select-item-option-active:not(.ant-select-item-option-disabled) {
+  background-color: #40a9ff;
+}
+
+.custom-modal .ant-select-item-option-disabled {
+  color: #888;
+}
+
+/* InputNumber styles */
+.custom-modal .ant-input-number {
+  background-color: #2f2f2f;
+  border-color: #444;
+  color: #ffffff;
+}
+
+.custom-modal .ant-input-number-handler-wrap {
+  background-color: #1f1f1f;
+  border-color: #444;
+}
+
+.custom-modal .ant-input-number-handler {
+  color: #ffffff;
+}
+
+.custom-modal
+  .ant-input-number-handler:hover
+  .ant-input-number-handler-up-inner,
+.custom-modal
+  .ant-input-number-handler:hover
+  .ant-input-number-handler-down-inner {
+  color: #40a9ff;
+}
+
+/* Button hover state */
+.custom-modal .ant-btn:hover,
+.custom-modal .ant-btn:focus {
+  color: #fff;
+  border-color: #40a9ff;
+  background: #40a9ff;
+}

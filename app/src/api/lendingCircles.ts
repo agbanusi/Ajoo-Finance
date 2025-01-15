@@ -1,0 +1,58 @@
+export const fetchLendingCircles = () => [
+  {
+    id: "0x69030eFC11616251C01f2cA4CA181e7c85E67084",
+    name: "Community Growth Fund",
+    contributionAmount: 100,
+    contributionPeriod: 30,
+    votingPeriod: 7,
+    interestRate: 5,
+    members: 10,
+    amountLoaned: 2300,
+    tvl: 5000,
+    image: "",
+    isMember: true,
+  },
+  {
+    id: "0x69030eFC11616251C01f2cA4CA181e7c85E67085",
+    name: "Entrepreneurs Support Circle",
+    contributionAmount: 500,
+    contributionPeriod: 15,
+    votingPeriod: 5,
+    interestRate: 7,
+    members: 28,
+    amountLoaned: 5000,
+    tvl: 80000,
+    image: "",
+    isMember: false,
+  },
+];
+
+export const fetchALendingCircle = (id: string) =>
+  [
+    {
+      id: "0x69030eFC11616251C01f2cA4CA181e7c85E67084",
+      name: "Community Growth Fund",
+      contributionAmount: 100,
+      contributionPeriod: 30,
+      votingPeriod: 7,
+      interestRate: 5,
+      members: 10,
+      amountLoaned: 2300,
+      tvl: 5000,
+      image: "",
+      isMember: true,
+    },
+    {
+      id: "0x69030eFC11616251C01f2cA4CA181e7c85E67085",
+      name: "Entrepreneurs Support Circle",
+      contributionAmount: 500,
+      contributionPeriod: 15,
+      votingPeriod: 5,
+      interestRate: 7,
+      members: 28,
+      amountLoaned: 5000,
+      tvl: 80000,
+      image: "",
+      isMember: false,
+    },
+  ].find((circle) => circle.id == id);

@@ -38,6 +38,7 @@ contract MicroInsurance is AccessControl, ReentrancyGuard {
 
     mapping(address => Member) public members;
     mapping(uint256 => Claim) public claims;
+    mapping(uint256 => mapping(address => bool)) public hasVoted;
     uint256 public claimCount;
     uint256 public totalMembers;
     uint256 public poolBalance;
@@ -84,6 +85,9 @@ contract MicroInsurance is AccessControl, ReentrancyGuard {
     }
 
     function rejectMembership(address _requester) external onlyRole(ADMIN_ROLE) {
+        require(!members[_requester].isActive, "No pending request");
+        delete members[_requester];
+        totalMembers--;
         emit MembershipRejected(_requester);
     }
 
@@ -101,7 +105,9 @@ contract MicroInsurance is AccessControl, ReentrancyGuard {
 
     function submitClaim(uint256 _amount) external nonReentrant onlyRole(MEMBER_ROLE){
         require(members[msg.sender].isActive, "Not a member");
+        require(_amount > 0, "Claim amount must be greater than 0");
         require(_amount <= maxClaimAmount, "Claim amount exceeds maximum");
+        require(_amount <= poolBalance, "Claim amount exceeds pool balance");
         require(isPremiumUpToDate(msg.sender), "Premium not up to date");
 
         claims[claimCount] = Claim({
@@ -124,6 +130,8 @@ contract MicroInsurance is AccessControl, ReentrancyGuard {
         Claim storage claim = claims[_claimId];
         require(block.timestamp < claim.votingDeadline, "Voting period has ended");
         require(!claim.executed && !claim.vetoed, "Claim already processed");
+        require(!hasVoted[_claimId][msg.sender], "Already voted");
+        hasVoted[_claimId][msg.sender] = true;
 
         if (_inFavor) {
             claim.votesFor++;
@@ -141,10 +149,15 @@ contract MicroInsurance is AccessControl, ReentrancyGuard {
     function _executeClaim(uint256 _claimId) internal nonReentrant {
         Claim storage claim = claims[_claimId];
         require(block.timestamp >= claim.votingDeadline, "Voting period has not ended");
-        require(!claim.executed && !claim.vetoed, "Claim already processed");
+        require(!claim.executed, "Claim already processed");
 
         uint256 totalVotes = claim.votesFor + claim.votesAgainst;
         uint256 approvalThreshold = (totalMembers * claimVotingThreshold) / 10000;
+
+        if(!claim.vetoed){
+            uint256 quorum = totalMembers / 2; // At least 50% of members must vote
+            require(totalVotes >= quorum, "Quorum not reached");
+        }
 
         if ((claim.votesFor > claim.votesAgainst && totalVotes >= approvalThreshold) || claim.vetoed) {
             require(poolBalance >= claim.amount, "Insufficient pool balance");
@@ -174,6 +187,7 @@ contract MicroInsurance is AccessControl, ReentrancyGuard {
 
     // Admin functions to update parameters
     function setMonthlyPremium(uint256 _newPremium) external onlyRole(ADMIN_ROLE) {
+        require(_newPremium > 0, "Premium must be greater than 0");
         monthlyPremium = _newPremium;
     }
 

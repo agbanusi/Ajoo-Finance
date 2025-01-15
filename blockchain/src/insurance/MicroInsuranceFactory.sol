@@ -4,6 +4,8 @@ pragma solidity ^0.8.20;
 import "./MicroInsurance.sol";
 
 contract MicroInsuranceFactory {
+    mapping(uint=>address) public insuranceCircles;
+    uint public id;
     event MicroInsuranceCreated(address indexed lendingContract, address indexed admin);
 
     function createMicroInsurance(
@@ -22,6 +24,8 @@ contract MicroInsuranceFactory {
             _maxClaimAmount,
             _name
         );
+        insuranceCircles[id] = address(newLending);
+        id++;
 
         emit MicroInsuranceCreated(address(newLending), msg.sender);
         return address(newLending);

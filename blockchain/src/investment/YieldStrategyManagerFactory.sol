@@ -8,6 +8,8 @@ import "@openzeppelin/contracts/access/IAccessControl.sol";
 
 
 contract YieldStrategyManagerFactory is Ownable {
+    mapping(uint=>address) public yieldStrategies;
+    uint public id;
      bytes32 public constant USER_ROLE = keccak256("USER_ROLE");
     event StrategyManagerCreated(address indexed strategyManager, address indexed asset);
 
@@ -38,6 +40,9 @@ contract YieldStrategyManagerFactory is Ownable {
             uniswapAllocation,
             msg.sender
         );
+
+        yieldStrategies[id] = address(newStrategyManager);
+        id++;
 
         IAccessControl(aaveStrategy).grantRole(USER_ROLE, address(newStrategyManager));
         IAccessControl(morphoStrategy).grantRole(USER_ROLE, address(newStrategyManager));
